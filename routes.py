@@ -7,7 +7,7 @@ import os
 # Create a router (like a mini-app)
 router = APIRouter()
 
-DATA_FILE = "scraped_data.txt"
+DATA_FILE = "/app/data/scraped_data.txt"
 
 # Data Model
 class UrlRequest(BaseModel):

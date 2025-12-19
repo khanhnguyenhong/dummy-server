@@ -16,7 +16,7 @@ app.add_middleware(
 
 # Connect the routes
 # You can add a prefix if you want, e.g., prefix="/api/v1"
-app.include_router(dummy_router)
+app.include_router(dummy_router, prefix="/api")
 
 @app.get("/")
 def read_root():

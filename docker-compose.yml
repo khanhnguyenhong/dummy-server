@@ -1,16 +1,14 @@
-version: '3.8'
-
 services:
   dummy-service:
     build: .
     container_name: dummy-backend
     restart: always
     ports:
-      - "8000:8000"  # Expose API on Port 8000
+      - "8000:8000" # Expose API on Port 8000
     networks:
       - dummy-network
     volumes:
-      - ./scraped_data.txt:/app/data/scraped_data.txt  # Persist the saved text files
+      - ./data:/app/data
 
 networks:
   dummy-network:

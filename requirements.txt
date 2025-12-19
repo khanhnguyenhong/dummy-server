@@ -2,3 +2,4 @@ fastapi
 uvicorn
 trafilatura
 requests
+lxml_html_clean

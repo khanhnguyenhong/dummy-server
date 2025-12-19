@@ -10,7 +10,7 @@ services:
     networks:
       - dummy-network
     volumes:
-      - ./scraped_data.txt:/app/scraped_data.txt  # Persist the saved text files
+      - ./scraped_data.txt:/app/data/scraped_data.txt  # Persist the saved text files
 
 networks:
   dummy-network:

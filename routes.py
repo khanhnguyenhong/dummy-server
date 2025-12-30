@@ -1,17 +1,15 @@
-# routes.py
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 import trafilatura
+from curl_cffi import requests
 import os
 import datetime
 
-# Create a router (like a mini-app)
 router = APIRouter()
 
 DATA_FILE = "./data/scraped_data.txt"
 HISTORY_FILE = "./data/history.txt"
 
-# Data Model
 class UrlRequest(BaseModel):
     url: str
 
@@ -20,9 +18,13 @@ async def scrape_and_save(request: UrlRequest):
     """
     Fetches URL, extracts text using AI heuristics, and saves to file.
     """
-    downloads = trafilatura.fetch_url(request.url)
+    response = requests.get(request.url, impersonate="chrome")
     
-    # Log to history
+    if response.status_code != 200:
+        raise HTTPException(status_code=400, detail=f"Could not fetch the URL: {response.status_code}")
+
+    downloaded = response.text
+    
     timestamp = datetime.datetime.now().isoformat()
     try:
         with open(HISTORY_FILE, "a", encoding="utf-8") as f:
@@ -30,18 +32,14 @@ async def scrape_and_save(request: UrlRequest):
     except Exception as e:
         print(f"Error logging history: {e}")
 
-    downloaded = downloads
-    
     if not downloaded:
         raise HTTPException(status_code=400, detail="Could not fetch the URL")
 
-    # Extract clean text
     text_content = trafilatura.extract(downloaded)
 
     if not text_content:
         raise HTTPException(status_code=400, detail="No readable text found")
 
-    # Save to file
     with open(DATA_FILE, "w", encoding="utf-8") as f:
         f.write(text_content)
 
@@ -63,6 +61,20 @@ async def get_saved_data():
         content = f.read()
     
     return {"content": content}
+
+@router.get("/save-history")
+async def save_history(request: UrlRequest):
+    """
+    Saves the history to a file.
+    """
+    timestamp = datetime.datetime.now().isoformat()
+    try:
+        with open(HISTORY_FILE, "a", encoding="utf-8") as f:
+            f.write(f"{timestamp} - {request.url}\n")
+    except Exception as e:
+        print(f"Error logging history: {e}")
+    
+    return {"status": "success", "message": "History saved successfully"}
 
 @router.get("/fetch-history")
 async def get_history():

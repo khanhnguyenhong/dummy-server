@@ -3,3 +3,4 @@ uvicorn
 trafilatura
 requests
 lxml_html_clean
+curl_cffi

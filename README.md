@@ -73,3 +73,22 @@ curl -X POST "http://127.0.0.1:8000/scrape" \
 ```bash
 curl http://127.0.0.1:8000/data
 ```
+
+## Connecting from a Client App
+
+Your API is configured to allow requests from **any origin** (`allow_origins=["*"]`), so you can easily connect from a local React, Angular, or Vue app.
+
+**Base URL**: `http://127.0.0.1:8000`
+
+### Example (JavaScript/Fetch)
+```javascript
+const response = await fetch('http://127.0.0.1:8000/api/scrape', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({ url: 'https://example.com' })
+});
+const data = await response.json();
+console.log(data);
+```

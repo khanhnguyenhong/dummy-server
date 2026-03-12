@@ -89,4 +89,4 @@ async def get_history():
     
     # Get last 20 lines
     last_20 = lines[-20:]
-    return {"history": [line.strip() for line in last_20]}
+    return {"history": [line.strip() for line in reversed(last_20)]}
